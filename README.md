@@ -143,7 +143,7 @@ pytest
 
 ```bash
 docker build -t product-image-api .
-docker run --rm -p 8000:8000 product-image-api
+docker run --rm -p 8000:10000 product-image-api
 ```
 
 or
@@ -151,6 +151,36 @@ or
 ```bash
 docker compose up --build
 ```
+
+## Deploying to Render
+
+This project can be deployed as a Docker-based **Web Service**:
+
+1. Push the project to the Git provider connected to Render. Ensure the repository includes the root `Dockerfile` and `requirements.txt`.
+2. In Render, choose **New → Web Service**, connect the repository, and select the branch to deploy.
+3. Select **Docker** as the runtime and set the Dockerfile path to `./Dockerfile` (the repository root is the service root).
+4. Set the health check path to `/health`.
+5. Add these environment variables in the service settings:
+
+   ```text
+   APP_ENV=production
+   LOG_LEVEL=info
+   MODEL_NAME=u2netp
+   MAX_UPLOAD_SIZE_MB=20
+   MAX_IMAGE_PIXELS=50000000
+   MAX_IMAGE_DIMENSION=8192
+   INFERENCE_CONCURRENCY=1
+   THREAD_POOL_SIZE=2
+   CORS_ORIGINS=*
+   DEFAULT_OUTPUT_FORMAT=png
+   DEFAULT_IMAGE_QUALITY=85
+   ```
+
+6. Leave `PORT` unset; Render supplies it. The Dockerfile binds Uvicorn to Render's `PORT`, falling back to `10000` for local container runs.
+7. Leave the Render start command blank so the Dockerfile's command is used, then create the service and wait for its first deployment.
+8. Test `https://<your-render-service>.onrender.com/health` and then open `/docs`.
+
+The initial model download can make the first background-removal request slower. Model files in an ephemeral container may need to be downloaded again after replacement or restart unless you configure persistent storage. Start with a single worker: each worker loads its own model copy. Confirm the instance memory and request limits against the image sizes and processing load you expect.
 
 ## Troubleshooting
 
