@@ -18,10 +18,12 @@ def create_app() -> FastAPI:
         redoc_url="/redoc",
         openapi_url="/openapi.json",
     )
+    allowed_origins = settings.cors_allowed_origins or ["*"]
+    allow_credentials = "*" not in allowed_origins
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_allowed_origins or ["*"],
-        allow_credentials=True,
+        allow_origins=allowed_origins,
+        allow_credentials=allow_credentials,
         allow_methods=["*"],
         allow_headers=["*"],
     )

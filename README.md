@@ -48,6 +48,8 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 The application reads settings from environment variables or `.env`.
 
+`CORS_ORIGINS=*` allows browser requests from any website. For a private or production deployment, prefer a comma-separated list of trusted origins, for example `https://shop.example.com,https://admin.example.com`. The wildcard mode disables credentialed cross-origin requests; this API does not require browser cookies. CORS is a browser policy, not authentication or abuse protection.
+
 ```env
 APP_ENV=development
 HOST=0.0.0.0
@@ -59,7 +61,7 @@ MAX_IMAGE_DIMENSION=8192
 MODEL_NAME=u2netp
 INFERENCE_CONCURRENCY=2
 THREAD_POOL_SIZE=4
-CORS_ORIGINS=http://localhost:3000,http://localhost:8000
+CORS_ORIGINS=*
 DEFAULT_OUTPUT_FORMAT=png
 DEFAULT_IMAGE_QUALITY=85
 ```
