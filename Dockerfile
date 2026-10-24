@@ -22,6 +22,4 @@ RUN groupadd --system app && useradd --system --gid app --create-home app
 RUN chown -R app:app /app
 USER app
 
-EXPOSE 10000
-
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000} --workers ${WEB_CONCURRENCY:-1}"]
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WEB_CONCURRENCY:-1}"]
