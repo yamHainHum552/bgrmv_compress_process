@@ -16,6 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# Pre-download rembg model at build time to avoid runtime download + cold start delay
+RUN python -c "from rembg import new_session; new_session('u2netp')" && echo "Model cached successfully"
+
 COPY . /app
 
 RUN groupadd --system app && useradd --system --gid app --create-home app
